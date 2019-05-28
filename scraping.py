@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -5,7 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
-from urllib.request import urlopen
+#from urllib.request import urlopen
+from urllib import urlopen
 from bs4 import BeautifulSoup as bs
 import time
 import json
@@ -14,8 +16,8 @@ import json
 def init_driver():
 
     # initiate the driver:
-    driver = webdriver.Firefox(
-        executable_path=r'C:\\geckodriver\\geckodriver.exe')
+    # driver = webdriver.Firefox(executable_path=r'C:\\geckodriver\\geckodriver.exe')
+    driver = webdriver.Firefox()
 
     # set a default wait time for the browser [5 seconds here]:
     driver.wait = WebDriverWait(driver, 5)
@@ -84,7 +86,6 @@ def open_tweet(driver, url):
 
             # find number of visible tweets:
             number_of_tweets = len(tweets)
-            print(number_of_tweets)
             # keep scrolling:
             driver.execute_script("arguments[0].scrollIntoView();", tweets[-1])
 
@@ -117,11 +118,12 @@ def isinset(thisset, elem):
     return False
 
 
-def extract_tweets(page_source, visitados, replies, atual):
+def extract_tweets(page_source, visitados, replies, atual, tweets):
 
     soup = bs(page_source, 'lxml')
+    atual_split = atual.split("/")
+    previous_id = atual[5]
 
-    tweets = []
     for li in soup.find_all("li", class_='js-stream-item'):
 
         # If our li doesn't have a tweet-id, we skip it as it's not going to be a tweet.
@@ -141,6 +143,7 @@ def extract_tweets(page_source, visitados, replies, atual):
                 'likes': 0,
                 'replies': 0
             }
+            previous_id = li['data-item-id']
 
             # Tweet Text
             text_p = li.find("p", class_="tweet-text")
@@ -177,50 +180,46 @@ def extract_tweets(page_source, visitados, replies, atual):
                 tweet['user_id'] = user_details_div['data-user-id']
                 tweet['user_screen_name'] = user_details_div['data-screen-name']
                 tweet['user_name'] = user_details_div['data-name']
-                tweet['replie_to'] = user_details_div['data-conversation-id']
+                # tweet['replie_to'] = user_details_div['data-conversation-id']
+
                 url = "https://twitter.com/" + \
                     tweet['user_screen_name'] + "/status/" + tweet['tweet_id']
-                if(not isinset(visitados, url) and (url not in replies)):
-                    print("url ", url)
-                    replies.add(url)
-                    tweets.append(tweet)
-                visitados.add(atual)
 
-    return tweets
+                if(not isinset(visitados, url) and (url not in replies)):
+                    replies.add(url)
+                if(tweet not in tweets):
+                    tweets.append(tweet)
+                
+
+        visitados.add(atual)
+
 
 
 if __name__ == "__main__":
+   
+    file = open("replies.json", "w+")
+    replies = {"https://twitter.com/marrentovictor/status/1090690260064002049"}
+    visitados = set()
+    tweets = []
 
-    # start a driver for a web browser:
     driver = init_driver()
 
-    username = "MeoMTcc"
-    password = "Twitter040399"
-    file = open("replies.json", "w+")
-
-    # log in to twitter (replace username/password with your own):
-    login_twitter(driver, username, password)
-
-    replies = {"https://twitter.com/DoViade/status/1133043764354789378"}
-    visitados = set()
     while(len(replies) > 0):
         source = None
         while(source is None):
+
             atual = replies.pop()
-            print("atual ", atual)
-            for x in visitados:
-                print(x)
             source = open_tweet(driver, atual)
-            # visitados.add(atual)
+
             if(source is not None):
-                # extract replies from the tweet page results:
-                tweets = extract_tweets(source, visitados, replies, atual)
-                # save replies in a file
-                for tweet in tweets:
-                    file.write(json.dumps(tweet))
+                extract_tweets(source, visitados, replies, atual, tweets)
+
             else:
-                print("AA")
                 replies.add(atual)
-                visitados.remove(atual)
+                close_driver(driver)
+                driver = init_driver()
+
+    for tweet in tweets:
+        file.write(json.dumps(tweet))
 
     close_driver(driver)

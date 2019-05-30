@@ -1,1 +1,155 @@
-{"tweet_id": "1090985181274619904", "user_id": "992801195751288837", "retweets": 0, "replie_to": ":", "replies": 1, "text": "Kkkkkkkkkk", "user_screen_name": "materialhooker", "user_name": "wisley", "created_at": 1548946111000.0, "likes": 0}{"tweet_id": "1090988595924664321", "user_id": "271068308", "retweets": 0, "replie_to": ":", "replies": 0, "text": "kkkkkkkkkkkkk", "user_screen_name": "marrentovictor", "user_name": "oscar e grammy now", "created_at": 1548946925000.0, "likes": 0}{"tweet_id": "1090731348053114880", "user_id": "85336542", "retweets": 0, "replie_to": ":", "replies": 1, "text": "Garoto kkkk", "user_screen_name": "biiismark", "user_name": "BISMARK", "created_at": 1548885592000.0, "likes": 0}{"tweet_id": "1090949927360962561", "user_id": "271068308", "retweets": 0, "replie_to": ":", "replies": 0, "text": "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK", "user_screen_name": "marrentovictor", "user_name": "oscar e grammy now", "created_at": 1548937706000.0, "likes": 0}{"tweet_id": "1090690260064002049", "user_id": "271068308", "retweets": 54, "replie_to": ":", "replies": 2, "text": "- Gaga quando tu gastou pra fazer o v\u00eddeo de ''Million Reasons''?\n\n-pic.twitter.com/6zI98VOOeI", "user_screen_name": "marrentovictor", "user_name": "oscar e grammy now", "created_at": 1548875796000.0, "likes": 215}
+{
+    "tweet_id": "1133756172572549125",
+    "replie_to": "1133755889528266752",
+    "text": "@malaquiasdev @antonio_lazaro @rcandidosilva @sandrogiacom @psanrosa13",
+    "user_id": "730347095467671552",
+    "user_screen_name": "almeidajava",
+    "user_name": "Fernando Almeida \ud83c\uddf5\ud83c\uddf9",
+    "created_at": 1559143510000.0,
+    "retweets": 0,
+    "likes": 1,
+    "replies": 0
+}{
+    "tweet_id": "1133757179138387968",
+    "replie_to": "1133755889528266752",
+    "text": "Apostila Caelum e os materiais de loiane s\u00e3o muito bons!",
+    "user_id": "30927595",
+    "user_screen_name": "antonio_lazaro",
+    "user_name": "Antonio Lazaro",
+    "created_at": 1559143750000.0,
+    "retweets": 0,
+    "likes": 6,
+    "replies": 1
+}{
+    "tweet_id": "1134071062357008384",
+    "replie_to": "1133755889528266752",
+    "text": "As apostilas da @caelum s\u00e3o excelentes, sempre uso nos treinamentos. \nOutra dica s\u00e3o os livros Desbravando Java Orienta\u00e7\u00e3o a Objetos e Explorando APIs e bibliotecas Java da @casadocodigo",
+    "user_id": "958166177066438656",
+    "user_screen_name": "samuelrrocha16",
+    "user_name": "Samuel Rodrigues da Rocha",
+    "created_at": 1559218585000.0,
+    "retweets": 0,
+    "likes": 2,
+    "replies": 1
+}{
+    "tweet_id": "1133766583514476546",
+    "replie_to": "1133755889528266752",
+    "text": "Concordo! Essas apostilas s\u00e3o \u00f3timas!",
+    "user_id": "3429765093",
+    "user_screen_name": "psanrosa13",
+    "user_name": "Paula Santana",
+    "created_at": 1559145992000.0,
+    "retweets": 0,
+    "likes": 2,
+    "replies": 0
+}{
+    "tweet_id": "1133755889528266752",
+    "replie_to": "1133766583514476546",
+    "text": "Pessoal, algu\u00e9m tem um bom material de Java/POO para Iniciantes? Vou dar uma forma\u00e7\u00e3o e preciso de um conte\u00fado legal(Com exemplos/conceitos)",
+    "user_id": "730347095467671552",
+    "user_screen_name": "almeidajava",
+    "user_name": "Fernando Almeida \ud83c\uddf5\ud83c\uddf9",
+    "created_at": 1559143442000.0,
+    "retweets": 0,
+    "likes": 5,
+    "replies": 4
+}{
+    "tweet_id": "1133755889528266752",
+    "replie_to": "1133756172572549125",
+    "text": "Pessoal, algu\u00e9m tem um bom material de Java/POO para Iniciantes? Vou dar uma forma\u00e7\u00e3o e preciso de um conte\u00fado legal(Com exemplos/conceitos)",
+    "user_id": "730347095467671552",
+    "user_screen_name": "almeidajava",
+    "user_name": "Fernando Almeida \ud83c\uddf5\ud83c\uddf9",
+    "created_at": 1559143442000.0,
+    "retweets": 0,
+    "likes": 5,
+    "replies": 4
+}{
+    "tweet_id": "1133755889528266752",
+    "replie_to": "1134071062357008384",
+    "text": "Pessoal, algu\u00e9m tem um bom material de Java/POO para Iniciantes? Vou dar uma forma\u00e7\u00e3o e preciso de um conte\u00fado legal(Com exemplos/conceitos)",
+    "user_id": "730347095467671552",
+    "user_screen_name": "almeidajava",
+    "user_name": "Fernando Almeida \ud83c\uddf5\ud83c\uddf9",
+    "created_at": 1559143442000.0,
+    "retweets": 0,
+    "likes": 5,
+    "replies": 4
+}{
+    "tweet_id": "1134080122863128576",
+    "replie_to": "1134071062357008384",
+    "text": "Obrigado Samuel, vou observar isso, abra\u00e7o!",
+    "user_id": "730347095467671552",
+    "user_screen_name": "almeidajava",
+    "user_name": "Fernando Almeida \ud83c\uddf5\ud83c\uddf9",
+    "created_at": 1559220746000.0,
+    "retweets": 0,
+    "likes": 0,
+    "replies": 0
+}{
+    "tweet_id": "1133755889528266752",
+    "replie_to": "1133757179138387968",
+    "text": "Pessoal, algu\u00e9m tem um bom material de Java/POO para Iniciantes? Vou dar uma forma\u00e7\u00e3o e preciso de um conte\u00fado legal(Com exemplos/conceitos)",
+    "user_id": "730347095467671552",
+    "user_screen_name": "almeidajava",
+    "user_name": "Fernando Almeida \ud83c\uddf5\ud83c\uddf9",
+    "created_at": 1559143442000.0,
+    "retweets": 0,
+    "likes": 5,
+    "replies": 4
+}{
+    "tweet_id": "1133758332391612416",
+    "replie_to": "1133757179138387968",
+    "text": "Boa Popete, havia esquecido do material da Caelum, nunca mais consultei nada deles(acho um pouco iniciante), mas pode ser muito \u00fatil para forma\u00e7\u00f5es, obrigado!",
+    "user_id": "730347095467671552",
+    "user_screen_name": "almeidajava",
+    "user_name": "Fernando Almeida \ud83c\uddf5\ud83c\uddf9",
+    "created_at": 1559144025000.0,
+    "retweets": 0,
+    "likes": 2,
+    "replies": 1
+}{
+    "tweet_id": "1133755889528266752",
+    "replie_to": "1134080122863128576",
+    "text": "Pessoal, algu\u00e9m tem um bom material de Java/POO para Iniciantes? Vou dar uma forma\u00e7\u00e3o e preciso de um conte\u00fado legal(Com exemplos/conceitos)",
+    "user_id": "730347095467671552",
+    "user_screen_name": "almeidajava",
+    "user_name": "Fernando Almeida \ud83c\uddf5\ud83c\uddf9",
+    "created_at": 1559143442000.0,
+    "retweets": 0,
+    "likes": 5,
+    "replies": 4
+}{
+    "tweet_id": "1133755889528266752",
+    "replie_to": "1133758332391612416",
+    "text": "Pessoal, algu\u00e9m tem um bom material de Java/POO para Iniciantes? Vou dar uma forma\u00e7\u00e3o e preciso de um conte\u00fado legal(Com exemplos/conceitos)",
+    "user_id": "730347095467671552",
+    "user_screen_name": "almeidajava",
+    "user_name": "Fernando Almeida \ud83c\uddf5\ud83c\uddf9",
+    "created_at": 1559143442000.0,
+    "retweets": 0,
+    "likes": 5,
+    "replies": 4
+}{
+    "tweet_id": "1133759868358279168",
+    "replie_to": "1133758332391612416",
+    "text": "Cara segue a linha do Popete que t\u00e1 \u00f3timo , as apostilas da caelum me ajudaram pacas no come\u00e7o",
+    "user_id": "1142360959",
+    "user_screen_name": "malaquiasdev",
+    "user_name": "Mateus Malaquias",
+    "created_at": 1559144391000.0,
+    "retweets": 0,
+    "likes": 3,
+    "replies": 0
+}{
+    "tweet_id": "1133755889528266752",
+    "replie_to": "1133759868358279168",
+    "text": "Pessoal, algu\u00e9m tem um bom material de Java/POO para Iniciantes? Vou dar uma forma\u00e7\u00e3o e preciso de um conte\u00fado legal(Com exemplos/conceitos)",
+    "user_id": "730347095467671552",
+    "user_screen_name": "almeidajava",
+    "user_name": "Fernando Almeida \ud83c\uddf5\ud83c\uddf9",
+    "created_at": 1559143442000.0,
+    "retweets": 0,
+    "likes": 5,
+    "replies": 4
+}

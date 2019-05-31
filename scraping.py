@@ -69,14 +69,13 @@ class wait_for_more_than_n_elements_to_be_present(object):
             return False
 
 
-def open_tweet(driver, url):
+def open_page_tweet(driver, url):
 
     driver.get(url)
     # initial wait for the search results to load
-    wait = WebDriverWait(driver, 15)
+    wait = WebDriverWait(driver, 10)
 
     try:
-        # wait until the first search result is found. Search results will be tweets, which are html list items and have the class='data-item-id':
         wait.until(EC.visibility_of_element_located(
             (By.CSS_SELECTOR, "li[data-item-id]")))
 
@@ -107,10 +106,8 @@ def open_tweet(driver, url):
         print("Não carregou nada")
         # if there are no search results then the "wait.until" call in the first "try" statement will never happen and it will time out. So we catch that exception and return no html.
         page_source = None
-    # print(page_source)
 
     return page_source
-
 
 def isinset(thisset, elem):
     for each in thisset:
@@ -118,8 +115,60 @@ def isinset(thisset, elem):
             return True
     return False
 
+def get_data_tweet(li, previous_id):
+    
+    tweet = {
+        'tweet_id': li['data-item-id'],
+        'replie_to': previous_id,
+        'text': None,
+        'user_id': None,
+        'user_screen_name': None,
+        'user_name': None,
+        'created_at': None,
+        'retweets': 0,
+        'likes': 0,
+        'replies': 0
+    }
+    # Tweet Text
+    text_p = li.find("p", class_="tweet-text")
+    if text_p is not None:
+        tweet['text'] = text_p.get_text()
 
-def extract_tweets(page_source, visitados, replies, atual, tweets):
+    # Tweet date
+    date_span = li.find("span", class_="_timestamp")
+    if date_span is not None:
+        tweet['created_at'] = float(date_span['data-time-ms'])
+
+    # Tweet Retweets
+    retweet_span = li.select(
+        "span.ProfileTweet-action--retweet > span.ProfileTweet-actionCount")
+    if retweet_span is not None and len(retweet_span) > 0:
+        tweet['retweets'] = int(
+            retweet_span[0]['data-tweet-stat-count'])
+
+    # Tweet Likes
+    like_span = li.select(
+        "span.ProfileTweet-action--favorite > span.ProfileTweet-actionCount")
+    if like_span is not None and len(like_span) > 0:
+        tweet['likes'] = int(like_span[0]['data-tweet-stat-count'])
+
+    # Tweet Replies
+    reply_span = li.select(
+        "span.ProfileTweet-action--reply > span.ProfileTweet-actionCount")
+    if reply_span is not None and len(reply_span) > 0:
+        tweet['replies'] = int(
+            reply_span[0]['data-tweet-stat-count'])
+
+    # Tweet User ID, User Screen Name, User Name
+    user_details_div = li.find("div", class_="tweet")
+    if user_details_div is not None:
+        tweet['user_id'] = user_details_div['data-user-id']
+        tweet['user_screen_name'] = user_details_div['data-screen-name']
+        tweet['user_name'] = user_details_div['data-name']
+    
+    return tweet
+
+def extract_replies(page_source, visitados, replies, atual, tweets):
 
     soup = bs(page_source, 'lxml')
     atual_split = atual.split("/")
@@ -132,96 +181,41 @@ def extract_tweets(page_source, visitados, replies, atual, tweets):
             if 'data-item-id' not in li.attrs:
                 continue
 
-            else:
+            elif (not pick_first_tweet):
+
                 pick_first_tweet = True
-                tweet = {
-                    'tweet_id': li['data-item-id'],
-                    'replie_to': previous_id,
-                    'text': None,
-                    'user_id': None,
-                    'user_screen_name': None,
-                    'user_name': None,
-                    'created_at': None,
-                    'retweets': 0,
-                    'likes': 0,
-                    'replies': 0
-                }
-                # Tweet Text
-                text_p = li.find("p", class_="tweet-text")
-                if text_p is not None:
-                    tweet['text'] = text_p.get_text()
+                tweet = get_data_tweet(li, previous_id)
+                url = "https://twitter.com/" + \
+                    tweet['user_screen_name'] + \
+                    "/status/" + tweet['tweet_id']
 
-                # Tweet date
-                date_span = li.find("span", class_="_timestamp")
-                if date_span is not None:
-                    tweet['created_at'] = float(date_span['data-time-ms'])
+                if(not isinset(visitados, url) and (url not in replies)):
+                    replies.add(url)
+                    visitados.add(atual)
+                if(tweet not in tweets):
+                    tweets.append(tweet)
 
-                # Tweet Retweets
-                retweet_span = li.select(
-                    "span.ProfileTweet-action--retweet > span.ProfileTweet-actionCount")
-                if retweet_span is not None and len(retweet_span) > 0:
-                    tweet['retweets'] = int(
-                        retweet_span[0]['data-tweet-stat-count'])
+def search(driver, replies):
 
-                # Tweet Likes
-                like_span = li.select(
-                    "span.ProfileTweet-action--favorite > span.ProfileTweet-actionCount")
-                if like_span is not None and len(like_span) > 0:
-                    tweet['likes'] = int(like_span[0]['data-tweet-stat-count'])
-
-                # Tweet Replies
-                reply_span = li.select(
-                    "span.ProfileTweet-action--reply > span.ProfileTweet-actionCount")
-                if reply_span is not None and len(reply_span) > 0:
-                    tweet['replies'] = int(
-                        reply_span[0]['data-tweet-stat-count'])
-
-                # Tweet User ID, User Screen Name, User Name
-                user_details_div = li.find("div", class_="tweet")
-                if user_details_div is not None:
-                    tweet['user_id'] = user_details_div['data-user-id']
-                    tweet['user_screen_name'] = user_details_div['data-screen-name']
-                    tweet['user_name'] = user_details_div['data-name']
-                    # tweet['replie_to'] = user_details_div['data-conversation-id']
-
-                    url = "https://twitter.com/" + \
-                        tweet['user_screen_name'] + \
-                        "/status/" + tweet['tweet_id']
-
-                    if(not isinset(visitados, url) and (url not in replies)):
-                        replies.add(url)
-                        visitados.add(atual)
-                    if(tweet not in tweets):
-                        tweets.append(tweet)
-                    #colocar o original no começo - garantir q o pai dele seja null
-                break
-                
-
-if __name__ == "__main__":
-
-    file = open("replies.json", "w+")  # , encoding="utf-8"
-    replies = {"https://twitter.com/almeidajava/status/1133755889528266752"}
     visitados = set()
     tweets = []
 
-    driver = init_driver()
-
     while(len(replies) > 0):
-        source = None
-        while(source is None):
+        atual = replies.pop()
+        source = open_page_tweet(driver, atual)
+        extract_replies(source, visitados, replies, atual, tweets)
 
-            atual = replies.pop()
-            source = open_tweet(driver, atual)
+    return tweets
+    
 
-            if(source is not None):
-                # file.write(source)
-                extract_tweets(source, visitados, replies, atual, tweets)
+if __name__ == "__main__":
 
-            else:
-                replies.add(atual)
-                close_driver(driver)
-                driver = init_driver()
-
+    file = open("replies.json", "w+")
+    replies = {"https://twitter.com/almeidajava/status/1133755889528266752"}
+    driver = init_driver()
+    
+    tweets = search(driver, replies)
+    
     for tweet in tweets:
         file.write(json.dumps(tweet))
 

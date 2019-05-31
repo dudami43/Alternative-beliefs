@@ -11,6 +11,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs
 import time
 import json
+import itertools
 
 
 def init_driver():
@@ -25,13 +26,11 @@ def init_driver():
 
     return driver
 
-
 def close_driver(driver):
 
     driver.close()
 
     return
-
 
 def login_twitter(driver, username, password):
 
@@ -55,7 +54,6 @@ def login_twitter(driver, username, password):
 
     return
 
-
 class wait_for_more_than_n_elements_to_be_present(object):
     def __init__(self, locator, count):
         self.locator = locator
@@ -67,7 +65,6 @@ class wait_for_more_than_n_elements_to_be_present(object):
             return len(elements) > self.count
         except StaleElementReferenceException:
             return False
-
 
 def open_page_tweet(driver, url):
 
@@ -115,10 +112,14 @@ def isinset(thisset, elem):
             return True
     return False
 
-def get_data_tweet(li, previous_id):
+def get_data_tweet(elem, previous_id):
     
+    if(previous_id is None): 
+        elem = elem.find("div", class_="tweet")
+        user_details_div = elem
+
     tweet = {
-        'tweet_id': li['data-item-id'],
+        'tweet_id': elem['data-item-id'],
         'replie_to': previous_id,
         'text': None,
         'user_id': None,
@@ -130,37 +131,37 @@ def get_data_tweet(li, previous_id):
         'replies': 0
     }
     # Tweet Text
-    text_p = li.find("p", class_="tweet-text")
+    text_p = elem.find("p", class_="tweet-text")
     if text_p is not None:
         tweet['text'] = text_p.get_text()
 
     # Tweet date
-    date_span = li.find("span", class_="_timestamp")
+    date_span = elem.find("span", class_="_timestamp")
     if date_span is not None:
         tweet['created_at'] = float(date_span['data-time-ms'])
 
     # Tweet Retweets
-    retweet_span = li.select(
+    retweet_span = elem.select(
         "span.ProfileTweet-action--retweet > span.ProfileTweet-actionCount")
     if retweet_span is not None and len(retweet_span) > 0:
         tweet['retweets'] = int(
             retweet_span[0]['data-tweet-stat-count'])
 
     # Tweet Likes
-    like_span = li.select(
+    like_span = elem.select(
         "span.ProfileTweet-action--favorite > span.ProfileTweet-actionCount")
     if like_span is not None and len(like_span) > 0:
         tweet['likes'] = int(like_span[0]['data-tweet-stat-count'])
 
     # Tweet Replies
-    reply_span = li.select(
+    reply_span = elem.select(
         "span.ProfileTweet-action--reply > span.ProfileTweet-actionCount")
     if reply_span is not None and len(reply_span) > 0:
         tweet['replies'] = int(
             reply_span[0]['data-tweet-stat-count'])
 
     # Tweet User ID, User Screen Name, User Name
-    user_details_div = li.find("div", class_="tweet")
+    if (previous_id is not None): user_details_div = elem.find("div", class_="tweet")
     if user_details_div is not None:
         tweet['user_id'] = user_details_div['data-user-id']
         tweet['user_screen_name'] = user_details_div['data-screen-name']
@@ -168,45 +169,60 @@ def get_data_tweet(li, previous_id):
     
     return tweet
 
-def extract_replies(page_source, visitados, replies, atual, tweets):
+def extract_replies(page_source, visited, replies, current, tweets):
 
     soup = bs(page_source, 'lxml')
-    atual_split = atual.split("/")
-    previous_id = atual_split[5]
+    current_split = current.split("/")
+    previous_id = current_split[5]
 
     for ol in soup.find_all("ol", class_='stream-items'):
+
         pick_first_tweet = False
-        for li in ol.find_all("li", class_='js-stream-item'):
-            # If our li doesn't have a tweet-id, we skip it as it's not going to be a tweet.
-            if 'data-item-id' not in li.attrs:
-                continue
+        is_ancestor = ((ol.parent).parent).parent
 
-            elif (not pick_first_tweet):
+        if (is_ancestor.get('id') != "ancestors"):    
+            #If our ol is an ancestor, it is already in our list.
+            for li in ol.find_all("li", class_='js-stream-item'):
 
-                pick_first_tweet = True
-                tweet = get_data_tweet(li, previous_id)
-                url = "https://twitter.com/" + \
-                    tweet['user_screen_name'] + \
-                    "/status/" + tweet['tweet_id']
+                if 'data-item-id' not in li.attrs:
+                    # If our li doesn't have a tweet-id, we skip it as it's not going to be a tweet.
+                    continue
 
-                if(not isinset(visitados, url) and (url not in replies)):
-                    replies.add(url)
-                    visitados.add(atual)
-                if(tweet not in tweets):
-                    tweets.append(tweet)
+                elif (not pick_first_tweet):
+
+                    pick_first_tweet = True
+                    tweet = get_data_tweet(li, previous_id)
+                    url = "https://twitter.com/" + \
+                        tweet['user_screen_name'] + \
+                        "/status/" + tweet['tweet_id']
+
+                    if(not isinset(visited, url) and (url not in replies)):
+                        replies.add(url)
+                        visited.add(current)
+                    if(tweet not in tweets):
+                        tweets.append(tweet)
+
+def get_original_tweet(page_source, tweets):
+
+    soup = bs(page_source, 'lxml')
+    first = soup.find("div", class_='permalink-tweet-container')
+    tweets.append(get_data_tweet(first, None))
 
 def search(driver, replies):
 
-    visitados = set()
+    visited = set()
     tweets = []
 
+    for each in replies:
+        source = open_page_tweet(driver, each)
+        get_original_tweet(source, tweets)
+
     while(len(replies) > 0):
-        atual = replies.pop()
-        source = open_page_tweet(driver, atual)
-        extract_replies(source, visitados, replies, atual, tweets)
+        current = replies.pop()
+        source = open_page_tweet(driver, current)
+        extract_replies(source, visited, replies, current, tweets)
 
     return tweets
-    
 
 if __name__ == "__main__":
 

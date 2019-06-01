@@ -9,7 +9,6 @@ from selenium.common.exceptions import TimeoutException
 from urllib.request import urlopen
 #from urllib import urlopen
 from bs4 import BeautifulSoup as bs
-import time
 import json
 import itertools
 
@@ -26,11 +25,13 @@ def init_driver():
 
     return driver
 
+
 def close_driver(driver):
 
     driver.close()
 
     return
+
 
 def login_twitter(driver, username, password):
 
@@ -54,6 +55,7 @@ def login_twitter(driver, username, password):
 
     return
 
+
 class wait_for_more_than_n_elements_to_be_present(object):
     def __init__(self, locator, count):
         self.locator = locator
@@ -66,11 +68,12 @@ class wait_for_more_than_n_elements_to_be_present(object):
         except StaleElementReferenceException:
             return False
 
+
 def open_page_tweet(driver, url):
 
     driver.get(url)
     # initial wait for the search results to load
-    wait = WebDriverWait(driver, 10)
+    wait = WebDriverWait(driver, 20)
 
     try:
         wait.until(EC.visibility_of_element_located(
@@ -92,7 +95,6 @@ def open_page_tweet(driver, url):
                     (By.CSS_SELECTOR, "li[data-item-id]"), number_of_tweets))
 
             except TimeoutException:
-                print("Acabou o scroll")
                 # if no more are visible the "wait.until" call will timeout. Catch the exception and exit the while loop:
                 break
 
@@ -100,21 +102,15 @@ def open_page_tweet(driver, url):
         page_source = driver.page_source
 
     except TimeoutException:
-        print("Não carregou nada")
         # if there are no search results then the "wait.until" call in the first "try" statement will never happen and it will time out. So we catch that exception and return no html.
         page_source = None
 
     return page_source
 
-def isinset(thisset, elem):
-    for each in thisset:
-        if elem == each:
-            return True
-    return False
 
 def get_data_tweet(elem, previous_id):
-    
-    if(previous_id is None): 
+
+    if(previous_id is None):
         elem = elem.find("div", class_="tweet")
         user_details_div = elem
 
@@ -161,15 +157,18 @@ def get_data_tweet(elem, previous_id):
             reply_span[0]['data-tweet-stat-count'])
 
     # Tweet User ID, User Screen Name, User Name
-    if (previous_id is not None): user_details_div = elem.find("div", class_="tweet")
+    if (previous_id is not None):
+        user_details_div = elem.find("div", class_="tweet")
+
     if user_details_div is not None:
         tweet['user_id'] = user_details_div['data-user-id']
         tweet['user_screen_name'] = user_details_div['data-screen-name']
         tweet['user_name'] = user_details_div['data-name']
-    
+
     return tweet
 
-def extract_replies(page_source, visited, replies, current, tweets):
+
+def extract_replies(page_source, replies, current, tweets):
 
     soup = bs(page_source, 'lxml')
     current_split = current.split("/")
@@ -180,8 +179,9 @@ def extract_replies(page_source, visited, replies, current, tweets):
         pick_first_tweet = False
         is_ancestor = ((ol.parent).parent).parent
 
-        if (is_ancestor.get('id') != "ancestors"):    
-            #If our ol is an ancestor, it is already in our list.
+        if (is_ancestor.get('id') != "ancestors"):
+            # If our ol is an ancestor, it is already in our list.
+
             for li in ol.find_all("li", class_='js-stream-item'):
 
                 if 'data-item-id' not in li.attrs:
@@ -195,23 +195,22 @@ def extract_replies(page_source, visited, replies, current, tweets):
                     url = "https://twitter.com/" + \
                         tweet['user_screen_name'] + \
                         "/status/" + tweet['tweet_id']
-
-                    if(not isinset(visited, url) and (url not in replies)):
+                    try:
+                        tweets[tweet['tweet_id']]
+                    except:
                         replies.add(url)
-                        visited.add(current)
-                    if(tweet not in tweets):
-                        tweets.append(tweet)
+                        tweets[tweet['tweet_id']] = tweet
+
 
 def get_original_tweet(page_source, tweets):
-
     soup = bs(page_source, 'lxml')
     first = soup.find("div", class_='permalink-tweet-container')
-    tweets.append(get_data_tweet(first, None))
+    tweet = get_data_tweet(first, None)
+    tweets[tweet['tweet_id']] = tweet
+
 
 def search(driver, replies):
-
-    visited = set()
-    tweets = []
+    tweets = dict()
 
     for each in replies:
         source = open_page_tweet(driver, each)
@@ -220,19 +219,23 @@ def search(driver, replies):
     while(len(replies) > 0):
         current = replies.pop()
         source = open_page_tweet(driver, current)
-        extract_replies(source, visited, replies, current, tweets)
+        extract_replies(source, replies, current, tweets)
 
     return tweets
 
-if __name__ == "__main__":
 
-    file = open("replies.json", "w+")
-    replies = {"https://twitter.com/almeidajava/status/1133755889528266752"}
+def main():
+    file = open("replies.json", "w+", encoding='utf8')
+    #replies = {"https://twitter.com/tiagodecarvo/status/1134485437538537472"}
+    replies = {"https://twitter.com/dudami43/status/1125537409184276480"}
     driver = init_driver()
-    
+
     tweets = search(driver, replies)
-    
-    for tweet in tweets:
-        file.write(json.dumps(tweet))
+
+    file.write(json.dumps(tweets, ensure_ascii=False))
 
     close_driver(driver)
+
+
+if __name__ == "__main__":
+    main()

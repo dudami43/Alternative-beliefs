@@ -6,10 +6,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 from urllib.request import urlopen
 #from urllib import urlopen
 from bs4 import BeautifulSoup as bs
 import json
+import time
 import itertools
 
 
@@ -55,57 +58,51 @@ def login_twitter(driver, username, password):
 
     return
 
-
-class wait_for_more_than_n_elements_to_be_present(object):
-    def __init__(self, locator, count):
-        self.locator = locator
-        self.count = count
-
-    def __call__(self, driver):
-        try:
-            elements = EC._find_elements(driver, self.locator)
-            return len(elements) > self.count
-        except StaleElementReferenceException:
-            return False
-
-
 def open_page_tweet(driver, url):
 
     driver.get(url)
-    # initial wait for the search results to load
-    wait = WebDriverWait(driver, 20)
+ 
+    SCROLL_PAUSE_TIME = 1
 
-    try:
-        wait.until(EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, "li[data-item-id]")))
+    while True:
+        # Get scroll height
+        ### This is the difference. Moving this *inside* the loop
+        ### means that it checks if scrollTo is still scrolling
+        last_height = driver.execute_script("let divs = document.getElementsByClassName('PermalinkOverlay'); return divs[0].scrollHeight")
 
-        # scroll down to the last tweet until there are no more tweets:
-        while True:
-            # extract all the tweets:
-            tweets = driver.find_elements_by_css_selector("li[data-item-id]")
+        # Scroll down to bottom
+        driver.execute_script("let divs = document.getElementsByClassName('PermalinkOverlay')[0]; divs.scrollTo(0, document.getElementsByClassName('PermalinkOverlay')[0].scrollHeight);")
 
-            # find number of visible tweets:
-            number_of_tweets = len(tweets)
-            # keep scrolling:
-            driver.execute_script("arguments[0].scrollIntoView();", tweets[-1])
+        # Wait to load page
+        time.sleep(SCROLL_PAUSE_TIME)
 
-            try:
-                # wait for more tweets to be visible:
-                wait.until(wait_for_more_than_n_elements_to_be_present(
-                    (By.CSS_SELECTOR, "li[data-item-id]"), number_of_tweets))
+        # Calculate new scroll height and compare with last scroll height
+        new_height = driver.execute_script("let divs = document.getElementsByClassName('PermalinkOverlay'); return divs[0].scrollHeight")
+        if new_height == last_height:
 
-            except TimeoutException:
-                # if no more are visible the "wait.until" call will timeout. Catch the exception and exit the while loop:
+            # try again (can be removed)
+            driver.execute_script("let divs = document.getElementsByClassName('PermalinkOverlay')[0]; divs.scrollTo(0, document.getElementsByClassName('PermalinkOverlay')[0].scrollHeight);")
+
+            # Wait to load page
+            time.sleep(SCROLL_PAUSE_TIME)
+
+            # Calculate new scroll height and compare with last scroll height
+            new_height = driver.execute_script("let divs = document.getElementsByClassName('PermalinkOverlay'); return divs[0].scrollHeight")
+
+            # check if the page height has remained the same
+            if new_height == last_height:
+                # if so, you are done
                 break
+            # if not, move on to the next loop
+            else:
+                last_height = new_height
+                continue
 
-        # extract the html for the whole lot:
-        page_source = driver.page_source
-
-    except TimeoutException:
-        # if there are no search results then the "wait.until" call in the first "try" statement will never happen and it will time out. So we catch that exception and return no html.
-        page_source = None
-
+    # extract the html for the whole lot:
+    page_source = driver.page_source
+ 
     return page_source
+
 
 
 def get_data_tweet(elem, previous_id):
@@ -211,14 +208,16 @@ def get_original_tweet(page_source, tweets):
 
 def search(driver, replies):
     tweets = dict()
-
+    
     for each in replies:
         source = open_page_tweet(driver, each)
+        print("Peguei a página do tweet")
         get_original_tweet(source, tweets)
 
     while(len(replies) > 0):
         current = replies.pop()
         source = open_page_tweet(driver, current)
+        print(current)
         extract_replies(source, replies, current, tweets)
 
     return tweets
@@ -226,8 +225,7 @@ def search(driver, replies):
 
 def main():
     file = open("replies.json", "w+", encoding='utf8')
-    #replies = {"https://twitter.com/tiagodecarvo/status/1134485437538537472"}
-    replies = {"https://twitter.com/dudami43/status/1125537409184276480"}
+    replies = {"https://twitter.com/realDonaldTrump/status/238717783007977473"}
     driver = init_driver()
 
     tweets = search(driver, replies)

@@ -2,9 +2,8 @@ import networkx as nx
 import json
 import matplotlib.pyplot as plt
 
-
 def main():
-    with open("replies.json", 'r') as f:
+    with open("replies_trump.json", 'r', encoding="utf8") as f:
         data = json.load(f)
     G = nx.Graph()
 

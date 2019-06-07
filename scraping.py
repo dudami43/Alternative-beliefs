@@ -13,7 +13,6 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup as bs
 import json
 import time
-import itertools
 
 
 def init_driver():
@@ -103,7 +102,57 @@ def open_page_tweet(driver, url):
  
     return page_source
 
+def open_page_search(driver, url):
 
+    itens_url = url.split("/")
+
+    query = "https://twitter.com/search?q=https%3A%2F%2Ftwitter.com%2F" + itens_url[3] + "%2Fstatus%2F" + itens_url[5] + "&src=typed_query"
+    driver.get(query)
+    
+    driver.find_element_by_class_name("SearchNavigation-titleText").click() #lose focus from login box
+
+    SCROLL_PAUSE_TIME = 3
+    time.sleep(SCROLL_PAUSE_TIME)
+    
+    while True:
+        # Get scroll height
+        ### This is the difference. Moving this *inside* the loop
+        ### means that it checks if scrollTo is still scrolling
+        
+        last_height = driver.execute_script("let divs = document.getElementsByClassName('AdaptiveSearchTimeline'); return divs[0].scrollHeight")
+
+        # Scroll down to bottom
+        driver.execute_script("window.scrollTo(0, document.getElementsByClassName('AdaptiveSearchTimeline')[0].scrollHeight);")
+
+        # Wait to load page
+        time.sleep(SCROLL_PAUSE_TIME)
+
+        # Calculate new scroll height and compare with last scroll height
+        new_height = driver.execute_script("let divs = document.getElementsByClassName('AdaptiveSearchTimeline'); return divs[0].scrollHeight")
+        
+        print(last_height, " ", new_height)
+        if new_height == last_height:
+
+            # try again (can be removed)
+            driver.execute_script("window.scrollTo(0, document.getElementsByClassName('AdaptiveSearchTimeline')[0].scrollHeight);")
+
+            # Wait to load page
+            time.sleep(SCROLL_PAUSE_TIME)
+
+            # Calculate new scroll height and compare with last scroll height
+            new_height = driver.execute_script("let divs = document.getElementsByClassName('AdaptiveSearchTimeline'); return divs[0].scrollHeight")
+
+            # check if the page height has remained the same
+            if new_height == last_height:
+                break
+            # if not, move on to the next loop
+            else:
+                last_height = new_height
+                continue
+
+    # extract the html for the whole lot:
+    page_source = driver.page_source
+    return page_source
 
 def get_data_tweet(elem, previous_id):
 
@@ -164,7 +213,6 @@ def get_data_tweet(elem, previous_id):
 
     return tweet
 
-
 def extract_replies(page_source, replies, current, tweets):
 
     soup = bs(page_source, 'lxml')
@@ -198,22 +246,35 @@ def extract_replies(page_source, replies, current, tweets):
                         replies.add(url)
                         tweets[tweet['tweet_id']] = tweet
 
+def extract_quotes(page_source, quotes):
 
+    soup = bs(page_source, 'lxml')
+
+    for li in soup.find_all("li", class_='js-stream-item'):
+        if 'data-item-id' not in li.attrs:
+            # If our li doesn't have a tweet-id, we skip it as it's not going to be a tweet.
+            continue
+
+        else:     
+            tweet_details = li.find("div", class_="tweet")
+            if tweet_details is not None:
+                url = "https://twitter.com" + tweet_details['data-permalink-path']
+                quotes.add(url)
+            
 def get_original_tweet(page_source, tweets):
     soup = bs(page_source, 'lxml')
     first = soup.find("div", class_='permalink-tweet-container')
     tweet = get_data_tweet(first, None)
     tweets[tweet['tweet_id']] = tweet
 
-
-def search(driver, replies):
+def bfs(driver, original):
     tweets = dict()
     
-    for each in replies:
-        source = open_page_tweet(driver, each)
-        print("Peguei a página do tweet")
-        get_original_tweet(source, tweets)
+    source = open_page_tweet(driver, original)
+    print("Peguei a página do tweet")
+    get_original_tweet(source, tweets)
 
+    replies = {original}
     while(len(replies) > 0):
         current = replies.pop()
         source = open_page_tweet(driver, current)
@@ -222,15 +283,32 @@ def search(driver, replies):
 
     return tweets
 
+def get_replies(driver, originals):
+
+    for each in originals:
+        link = each.split("/")
+        file_name = "replies_" + link[5] + ".json"
+
+        file = open(file_name, "w+", encoding='utf8')
+        tweets = bfs(driver, each)
+        file.write(json.dumps(tweets, ensure_ascii=False))
+
+def get_quotes(driver, originals):
+
+    for each in originals:
+        quotes = set()
+        source = open_page_search(driver, each)
+        extract_quotes(source, quotes)
+        get_replies(driver, quotes)
 
 def main():
-    file = open("replies.json", "w+", encoding='utf8')
-    replies = {"https://twitter.com/realDonaldTrump/status/238717783007977473"}
+    
     driver = init_driver()
 
-    tweets = search(driver, replies)
+    originals = ["https://twitter.com/aninha_fantoni/status/1136733104171827200"]
 
-    file.write(json.dumps(tweets, ensure_ascii=False))
+    get_replies(driver, originals)
+    get_quotes(driver, originals)
 
     close_driver(driver)
 

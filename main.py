@@ -5,7 +5,7 @@ import time
 def main():
     driver = webdriver.Firefox(
         executable_path=r'C:\\geckodriver\\geckodriver.exe')
-    driver.get('https://twitter.com/realDonaldTrump/status/238717783007977473')
+    driver.get('https://twitter.com/pbump/status/1032709192002486272')
     
     SCROLL_PAUSE_TIME = 1
 
@@ -36,8 +36,17 @@ def main():
 
             # check if the page height has remained the same
             if new_height == last_height:
-                # if so, you are done
-                break
+                try:
+                    show_more_threads = driver.find_elements_by_xpath("//button[@class='ThreadedConversation-showMoreThreadsButton']")[0]
+                    show_more_threads.click()
+                    print("Cliquei show more")
+                except:
+                    try:
+                        show_offensive = driver.find_elements_by_xpath("//button[@class='ThreadedConversation-showMoreThreadsPrompt']")[0]
+                        show_offensive.click()
+                        print("Cliquei show off")
+                    except:
+                        break
             # if not, move on to the next loop
             else:
                 last_height = new_height

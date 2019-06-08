@@ -27,13 +27,11 @@ def init_driver():
 
     return driver
 
-
 def close_driver(driver):
 
     driver.close()
 
     return
-
 
 def login_twitter(driver, username, password):
 
@@ -154,7 +152,7 @@ def open_page_search(driver, url):
     page_source = driver.page_source
     return page_source
 
-def get_data_tweet(elem, previous_id):
+def get_data_tweet(elem, previous_id, quoted_id=None):
 
     if(previous_id is None):
         elem = elem.find("div", class_="tweet")
@@ -163,6 +161,7 @@ def get_data_tweet(elem, previous_id):
     tweet = {
         'tweet_id': elem['data-item-id'],
         'replie_to': previous_id,
+        'quoting': quoted_id,
         'text': None,
         'user_id': None,
         'user_screen_name': None,
@@ -261,18 +260,18 @@ def extract_quotes(page_source, quotes):
                 url = "https://twitter.com" + tweet_details['data-permalink-path']
                 quotes.add(url)
             
-def get_original_tweet(page_source, tweets):
+def get_original_tweet(page_source, tweets, quoted_id):
     soup = bs(page_source, 'lxml')
     first = soup.find("div", class_='permalink-tweet-container')
-    tweet = get_data_tweet(first, None)
+    tweet = get_data_tweet(first, None, quoted_id)
     tweets[tweet['tweet_id']] = tweet
 
-def bfs(driver, original):
+def bfs(driver, original, quoted_id):
     tweets = dict()
     
     source = open_page_tweet(driver, original)
     print("Peguei a página do tweet")
-    get_original_tweet(source, tweets)
+    get_original_tweet(source, tweets, quoted_id)
 
     replies = {original}
     while(len(replies) > 0):
@@ -283,14 +282,16 @@ def bfs(driver, original):
 
     return tweets
 
-def get_replies(driver, originals):
+def get_replies(driver, originals, quoted_id=None):
 
     for each in originals:
         link = each.split("/")
-        file_name = "replies_" + link[5] + ".json"
-
+        if(quoted_id is not None):
+            file_name = "replies_" + quoted_id + "_" + link[5] + ".json"
+        else: 
+            file_name = "replies_" + link[5] + ".json"
         file = open(file_name, "w+", encoding='utf8')
-        tweets = bfs(driver, each)
+        tweets = bfs(driver, each, quoted_id)
         file.write(json.dumps(tweets, ensure_ascii=False))
 
 def get_quotes(driver, originals):
@@ -299,7 +300,8 @@ def get_quotes(driver, originals):
         quotes = set()
         source = open_page_search(driver, each)
         extract_quotes(source, quotes)
-        get_replies(driver, quotes)
+        link = each.split("/")
+        get_replies(driver, quotes, link[5])
 
 def main():
     

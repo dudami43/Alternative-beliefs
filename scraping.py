@@ -287,9 +287,9 @@ def get_replies(driver, originals, quoted_id=None):
     for each in originals:
         link = each.split("/")
         if(quoted_id is not None):
-            file_name = "replies_" + quoted_id + "_" + link[5] + ".json"
+            file_name = "dados\\replies_" + quoted_id + "_" + link[5] + ".json"
         else: 
-            file_name = "replies_" + link[5] + ".json"
+            file_name = "dados\\replies_" + link[5] + ".json"
         file = open(file_name, "w+", encoding='utf8')
         tweets = bfs(driver, each, quoted_id)
         file.write(json.dumps(tweets, ensure_ascii=False))
@@ -307,7 +307,7 @@ def main():
     
     driver = init_driver()
 
-    originals = ["https://twitter.com/aninha_fantoni/status/1136733104171827200"]
+    originals = ["https://twitter.com/realDonaldTrump/status/238717783007977473"]
 
     get_replies(driver, originals)
     get_quotes(driver, originals)

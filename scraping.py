@@ -268,16 +268,21 @@ def get_original_tweet(page_source, tweets, quoted_id):
 
 def bfs(driver, original, quoted_id):
     tweets = dict()
-    
-    source = open_page_tweet(driver, original)
-    print("Peguei a página do tweet")
+    try:    
+        source = open_page_tweet(driver, original)
+        print("Peguei a página do tweet")
+    except:
+        print("N peguei ", original)
     get_original_tweet(source, tweets, quoted_id)
 
     replies = {original}
     while(len(replies) > 0):
         current = replies.pop()
-        source = open_page_tweet(driver, current)
-        print(current)
+        try:
+            source = open_page_tweet(driver, current)
+            print(current)
+        except:
+            print("N peguei ", current)
         extract_replies(source, replies, current, tweets)
 
     return tweets
@@ -298,7 +303,10 @@ def get_quotes(driver, originals):
 
     for each in originals:
         quotes = set()
-        source = open_page_search(driver, each)
+        try:
+            source = open_page_search(driver, each)
+        except:
+            print("Não abri busca")
         extract_quotes(source, quotes)
         link = each.split("/")
         get_replies(driver, quotes, link[5])

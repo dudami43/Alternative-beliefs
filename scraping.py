@@ -27,11 +27,13 @@ def init_driver():
 
     return driver
 
+
 def close_driver(driver):
 
     driver.close()
 
     return
+
 
 def login_twitter(driver, username, password):
 
@@ -55,36 +57,42 @@ def login_twitter(driver, username, password):
 
     return
 
+
 def open_page_tweet(driver, url):
 
+    time.sleep(1)
     driver.get(url)
- 
-    SCROLL_PAUSE_TIME = 1
+    SCROLL_PAUSE_TIME = 30
 
     while True:
         # Get scroll height
-        ### This is the difference. Moving this *inside* the loop
-        ### means that it checks if scrollTo is still scrolling
-        last_height = driver.execute_script("let divs = document.getElementsByClassName('PermalinkOverlay'); return divs[0].scrollHeight")
+        # This is the difference. Moving this *inside* the loop
+        # means that it checks if scrollTo is still scrolling
+        last_height = driver.execute_script(
+            "let divs = document.getElementsByClassName('PermalinkOverlay'); return divs[0].scrollHeight")
 
         # Scroll down to bottom
-        driver.execute_script("let divs = document.getElementsByClassName('PermalinkOverlay')[0]; divs.scrollTo(0, document.getElementsByClassName('PermalinkOverlay')[0].scrollHeight);")
+        driver.execute_script(
+            "let divs = document.getElementsByClassName('PermalinkOverlay')[0]; divs.scrollTo(0, document.getElementsByClassName('PermalinkOverlay')[0].scrollHeight);")
 
         # Wait to load page
         time.sleep(SCROLL_PAUSE_TIME)
 
         # Calculate new scroll height and compare with last scroll height
-        new_height = driver.execute_script("let divs = document.getElementsByClassName('PermalinkOverlay'); return divs[0].scrollHeight")
+        new_height = driver.execute_script(
+            "let divs = document.getElementsByClassName('PermalinkOverlay'); return divs[0].scrollHeight")
         if new_height == last_height:
 
             # try again (can be removed)
-            driver.execute_script("let divs = document.getElementsByClassName('PermalinkOverlay')[0]; divs.scrollTo(0, document.getElementsByClassName('PermalinkOverlay')[0].scrollHeight);")
+            driver.execute_script(
+                "let divs = document.getElementsByClassName('PermalinkOverlay')[0]; divs.scrollTo(0, document.getElementsByClassName('PermalinkOverlay')[0].scrollHeight);")
 
             # Wait to load page
             time.sleep(SCROLL_PAUSE_TIME)
 
             # Calculate new scroll height and compare with last scroll height
-            new_height = driver.execute_script("let divs = document.getElementsByClassName('PermalinkOverlay'); return divs[0].scrollHeight")
+            new_height = driver.execute_script(
+                "let divs = document.getElementsByClassName('PermalinkOverlay'); return divs[0].scrollHeight")
 
             # check if the page height has remained the same
             if new_height == last_height:
@@ -97,48 +105,56 @@ def open_page_tweet(driver, url):
 
     # extract the html for the whole lot:
     page_source = driver.page_source
- 
+
     return page_source
+
 
 def open_page_search(driver, url):
 
     itens_url = url.split("/")
 
-    query = "https://twitter.com/search?q=https%3A%2F%2Ftwitter.com%2F" + itens_url[3] + "%2Fstatus%2F" + itens_url[5] + "&src=typed_query"
+    query = "https://twitter.com/search?q=https%3A%2F%2Ftwitter.com%2F" + \
+        itens_url[3] + "%2Fstatus%2F" + itens_url[5] + "&src=typed_query"
+    time.sleep(1)
     driver.get(query)
-    
-    driver.find_element_by_class_name("SearchNavigation-titleText").click() #lose focus from login box
+    driver.find_element_by_class_name(
+        "SearchNavigation-titleText").click()  # lose focus from login box
 
-    SCROLL_PAUSE_TIME = 3
+    SCROLL_PAUSE_TIME = 30
     time.sleep(SCROLL_PAUSE_TIME)
-    
+
     while True:
         # Get scroll height
-        ### This is the difference. Moving this *inside* the loop
-        ### means that it checks if scrollTo is still scrolling
-        
-        last_height = driver.execute_script("let divs = document.getElementsByClassName('AdaptiveSearchTimeline'); return divs[0].scrollHeight")
+        # This is the difference. Moving this *inside* the loop
+        # means that it checks if scrollTo is still scrolling
+
+        last_height = driver.execute_script(
+            "let divs = document.getElementsByClassName('AdaptiveSearchTimeline'); return divs[0].scrollHeight")
 
         # Scroll down to bottom
-        driver.execute_script("window.scrollTo(0, document.getElementsByClassName('AdaptiveSearchTimeline')[0].scrollHeight);")
+        driver.execute_script(
+            "window.scrollTo(0, document.getElementsByClassName('AdaptiveSearchTimeline')[0].scrollHeight);")
 
         # Wait to load page
         time.sleep(SCROLL_PAUSE_TIME)
 
         # Calculate new scroll height and compare with last scroll height
-        new_height = driver.execute_script("let divs = document.getElementsByClassName('AdaptiveSearchTimeline'); return divs[0].scrollHeight")
-        
+        new_height = driver.execute_script(
+            "let divs = document.getElementsByClassName('AdaptiveSearchTimeline'); return divs[0].scrollHeight")
+
         print(last_height, " ", new_height)
         if new_height == last_height:
 
             # try again (can be removed)
-            driver.execute_script("window.scrollTo(0, document.getElementsByClassName('AdaptiveSearchTimeline')[0].scrollHeight);")
+            driver.execute_script(
+                "window.scrollTo(0, document.getElementsByClassName('AdaptiveSearchTimeline')[0].scrollHeight);")
 
             # Wait to load page
             time.sleep(SCROLL_PAUSE_TIME)
 
             # Calculate new scroll height and compare with last scroll height
-            new_height = driver.execute_script("let divs = document.getElementsByClassName('AdaptiveSearchTimeline'); return divs[0].scrollHeight")
+            new_height = driver.execute_script(
+                "let divs = document.getElementsByClassName('AdaptiveSearchTimeline'); return divs[0].scrollHeight")
 
             # check if the page height has remained the same
             if new_height == last_height:
@@ -151,6 +167,7 @@ def open_page_search(driver, url):
     # extract the html for the whole lot:
     page_source = driver.page_source
     return page_source
+
 
 def get_data_tweet(elem, previous_id, quoted_id=None):
 
@@ -212,6 +229,7 @@ def get_data_tweet(elem, previous_id, quoted_id=None):
 
     return tweet
 
+
 def extract_replies(page_source, replies, current, tweets):
 
     soup = bs(page_source, 'lxml')
@@ -245,6 +263,7 @@ def extract_replies(page_source, replies, current, tweets):
                         replies.add(url)
                         tweets[tweet['tweet_id']] = tweet
 
+
 def extract_quotes(page_source, quotes):
 
     soup = bs(page_source, 'lxml')
@@ -254,21 +273,24 @@ def extract_quotes(page_source, quotes):
             # If our li doesn't have a tweet-id, we skip it as it's not going to be a tweet.
             continue
 
-        else:     
+        else:
             tweet_details = li.find("div", class_="tweet")
             if tweet_details is not None:
-                url = "https://twitter.com" + tweet_details['data-permalink-path']
+                url = "https://twitter.com" + \
+                    tweet_details['data-permalink-path']
                 quotes.add(url)
-            
+
+
 def get_original_tweet(page_source, tweets, quoted_id):
     soup = bs(page_source, 'lxml')
     first = soup.find("div", class_='permalink-tweet-container')
     tweet = get_data_tweet(first, None, quoted_id)
     tweets[tweet['tweet_id']] = tweet
 
+
 def bfs(driver, original, quoted_id):
     tweets = dict()
-    try:    
+    try:
         source = open_page_tweet(driver, original)
         print("Peguei a página do tweet")
     except:
@@ -287,17 +309,19 @@ def bfs(driver, original, quoted_id):
 
     return tweets
 
+
 def get_replies(driver, originals, quoted_id=None):
 
     for each in originals:
         link = each.split("/")
         if(quoted_id is not None):
             file_name = "dados\\replies_" + quoted_id + "_" + link[5] + ".json"
-        else: 
+        else:
             file_name = "dados\\replies_" + link[5] + ".json"
         file = open(file_name, "w+", encoding='utf8')
         tweets = bfs(driver, each, quoted_id)
         file.write(json.dumps(tweets, ensure_ascii=False))
+
 
 def get_quotes(driver, originals):
 
@@ -310,12 +334,15 @@ def get_quotes(driver, originals):
         extract_quotes(source, quotes)
         link = each.split("/")
         get_replies(driver, quotes, link[5])
+        time.sleep(10)
+
 
 def main():
-    
+
     driver = init_driver()
 
-    originals = ["https://twitter.com/realDonaldTrump/status/238717783007977473"]
+    originals = [
+        "https://twitter.com/realDonaldTrump/status/238717783007977473"]
 
     get_replies(driver, originals)
     get_quotes(driver, originals)

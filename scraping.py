@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
 from urllib.request import urlopen
 # ubuntu from urllib import urlopen
 from bs4 import BeautifulSoup as bs
@@ -19,8 +19,9 @@ import random
 def init_driver():
 
     # initiate the driver:
-    driver = webdriver.Firefox(
-        executable_path=r'C:\\geckodriver\\geckodriver.exe')
+    options = Options()
+    options.headless = True
+    driver = webdriver.Firefox(options=options, executable_path=r'C:\\geckodriver\\geckodriver.exe')
     # driver = webdriver.Firefox()
 
     # set a default wait time for the browser [5 seconds here]:

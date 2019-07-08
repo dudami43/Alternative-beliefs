@@ -1,0 +1,28 @@
+{
+    "1148271528947212290": {
+        "tweet_id": "1148271528947212290",
+        "replie_to": null,
+        "quoting": "1148268860560166912",
+        "text": "A @taina_guerreirohttps://twitter.com/FministaCansada/status/1148268860560166912 …",
+        "user_id": "53819321",
+        "user_screen_name": "mmayra__",
+        "user_name": "Mayra",
+        "created_at": 1562604241000.0,
+        "retweets": 0,
+        "likes": 1,
+        "replies": 1
+    },
+    "1148311369609072641": {
+        "tweet_id": "1148311369609072641",
+        "replie_to": "1148271528947212290",
+        "quoting": null,
+        "text": "comentários do tv time contem comigo pra tudooo",
+        "user_id": "280170161",
+        "user_screen_name": "italomartinns",
+        "user_name": "𝑰𝒕𝒂𝒍𝒐",
+        "created_at": 1562613739000.0,
+        "retweets": 0,
+        "likes": 0,
+        "replies": 0
+    }
+}

@@ -9,10 +9,11 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from urllib.request import urlopen
-#from urllib import urlopen
+# ubuntu from urllib import urlopen
 from bs4 import BeautifulSoup as bs
 import json
 import time
+import random
 
 
 def init_driver():
@@ -62,7 +63,7 @@ def open_page_tweet(driver, url):
 
     time.sleep(1)
     driver.get(url)
-    SCROLL_PAUSE_TIME = 30
+    SCROLL_PAUSE_TIME = random.randint(7, 13)
 
     while True:
         # Get scroll height
@@ -120,7 +121,7 @@ def open_page_search(driver, url):
     driver.find_element_by_class_name(
         "SearchNavigation-titleText").click()  # lose focus from login box
 
-    SCROLL_PAUSE_TIME = 30
+    SCROLL_PAUSE_TIME = random.randint(7, 13)
     time.sleep(SCROLL_PAUSE_TIME)
 
     while True:
@@ -232,7 +233,7 @@ def get_data_tweet(elem, previous_id, quoted_id=None):
 
 def extract_replies(page_source, replies, current, tweets):
 
-    soup = bs(page_source, 'lxml')
+    soup = bs(page_source, "html.parser")
     current_split = current.split("/")
     previous_id = current_split[5]
 
@@ -266,7 +267,7 @@ def extract_replies(page_source, replies, current, tweets):
 
 def extract_quotes(page_source, quotes):
 
-    soup = bs(page_source, 'lxml')
+    soup = bs(page_source, "html.parser")
 
     for li in soup.find_all("li", class_='js-stream-item'):
         if 'data-item-id' not in li.attrs:
@@ -282,7 +283,7 @@ def extract_quotes(page_source, quotes):
 
 
 def get_original_tweet(page_source, tweets, quoted_id):
-    soup = bs(page_source, 'lxml')
+    soup = bs(page_source, "html.parser")
     first = soup.find("div", class_='permalink-tweet-container')
     tweet = get_data_tweet(first, None, quoted_id)
     tweets[tweet['tweet_id']] = tweet
@@ -315,9 +316,9 @@ def get_replies(driver, originals, quoted_id=None):
     for each in originals:
         link = each.split("/")
         if(quoted_id is not None):
-            file_name = "dados\\replies_" + quoted_id + "_" + link[5] + ".json"
+            file_name = "dados/replies_" + quoted_id + "_" + link[5] + ".json"
         else:
-            file_name = "dados\\replies_" + link[5] + ".json"
+            file_name = "dados/replies_" + link[5] + ".json"
         file = open(file_name, "w+", encoding='utf8')
         tweets = bfs(driver, each, quoted_id)
         file.write(json.dumps(tweets, ensure_ascii=False))
@@ -329,21 +330,20 @@ def get_quotes(driver, originals):
         quotes = set()
         try:
             source = open_page_search(driver, each)
+            extract_quotes(source, quotes)
         except:
-            print("Não abri busca")
-        extract_quotes(source, quotes)
+            print("Não abri busca de ", each)
         link = each.split("/")
         get_replies(driver, quotes, link[5])
-        time.sleep(10)
+        time.sleep(random.randint(7, 13))
 
 
 def main():
 
     driver = init_driver()
 
-    originals = [
-        "https://twitter.com/realDonaldTrump/status/238717783007977473"]
-
+    random.seed()
+    originals = ["https://twitter.com/FministaCansada/status/1148268860560166912"]
     get_replies(driver, originals)
     get_quotes(driver, originals)
 

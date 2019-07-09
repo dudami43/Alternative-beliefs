@@ -21,7 +21,8 @@ def init_driver():
     # initiate the driver:
     options = Options()
     options.headless = True
-    driver = webdriver.Firefox(options=options, executable_path=r'C:\\geckodriver\\geckodriver.exe')
+    driver = webdriver.Firefox(
+        options=options, executable_path=r'C:\\geckodriver\\geckodriver.exe')
     # driver = webdriver.Firefox()
 
     # set a default wait time for the browser [5 seconds here]:
@@ -83,6 +84,8 @@ def open_page_tweet(driver, url):
         # Calculate new scroll height and compare with last scroll height
         new_height = driver.execute_script(
             "let divs = document.getElementsByClassName('PermalinkOverlay'); return divs[0].scrollHeight")
+
+        print(last_height, " ", new_height)
         if new_height == last_height:
 
             # try again (can be removed)
@@ -256,14 +259,16 @@ def extract_replies(page_source, replies, current, tweets):
 
                     pick_first_tweet = True
                     tweet = get_data_tweet(li, previous_id)
-                    url = "https://twitter.com/" + \
-                        tweet['user_screen_name'] + \
-                        "/status/" + tweet['tweet_id']
-                    try:
-                        tweets[tweet['tweet_id']]
-                    except:
-                        replies.add(url)
-                        tweets[tweet['tweet_id']] = tweet
+
+                    if(tweet['text'] is not None):
+                        url = "https://twitter.com/" + \
+                            tweet['user_screen_name'] + \
+                            "/status/" + tweet['tweet_id']
+                        try:
+                            tweets[tweet['tweet_id']]
+                        except:
+                            replies.add(url)
+                            tweets[tweet['tweet_id']] = tweet
 
 
 def extract_quotes(page_source, quotes):
@@ -344,7 +349,8 @@ def main():
     driver = init_driver()
 
     random.seed()
-    originals = ["https://twitter.com/FministaCansada/status/1148268860560166912"]
+    originals = [
+        "https://twitter.com/dudami43/status/1127183747428884480"]
     get_replies(driver, originals)
     get_quotes(driver, originals)
 

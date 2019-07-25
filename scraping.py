@@ -63,7 +63,6 @@ def login_twitter(driver, username, password):
 
 def open_page_tweet(driver, url):
 
-    time.sleep(1)
     driver.get(url)
     SCROLL_PAUSE_TIME = random.randint(7, 13)
 
@@ -300,9 +299,9 @@ def bfs(driver, original, quoted_id):
     try:
         source = open_page_tweet(driver, original)
         print("Peguei a página do tweet")
+        get_original_tweet(source, tweets, quoted_id)
     except:
         print("N peguei ", original)
-    get_original_tweet(source, tweets, quoted_id)
 
     replies = {original}
     while(len(replies) > 0):
@@ -310,16 +309,16 @@ def bfs(driver, original, quoted_id):
         try:
             source = open_page_tweet(driver, current)
             print(current)
+            extract_replies(source, replies, current, tweets)
         except:
             print("N peguei ", current)
-        extract_replies(source, replies, current, tweets)
-
     return tweets
 
 
 def get_replies(driver, originals, quoted_id=None):
 
     for each in originals:
+        print("Getting replies of", each)
         link = each.split("/")
         if(quoted_id is not None):
             file_name = "dados/replies_" + quoted_id + "_" + link[5] + ".json"
@@ -333,6 +332,7 @@ def get_replies(driver, originals, quoted_id=None):
 def get_quotes(driver, originals):
 
     for each in originals:
+        print("Getting quotes of", each)
         quotes = set()
         try:
             source = open_page_search(driver, each)
@@ -349,8 +349,11 @@ def main():
     driver = init_driver()
 
     random.seed()
+
     originals = [
-        "https://twitter.com/dudami43/status/1127183747428884480"]
+        "https://twitter.com/realdonaldtrump/status/488813607958757376"
+    ]
+
     get_replies(driver, originals)
     get_quotes(driver, originals)
 

@@ -2,23 +2,31 @@ import glob
 import json
 
 
+ 
 def main():
 
-    files = glob.glob("dadoss/*.json")
+    files = glob.glob("dados/*.json")
 
-    #out = open("todos.json", "w+", encoding='utf8')
-    data = []
+    with open("merged_file.json", "w+", encoding='utf8') as out:
+        first = True
+        for each in files:
 
-    # for each in files:
+            with open(each, 'r', encoding="utf8") as f:
+                data = json.load(f)
+            if(first):
+                out.write("{")
+                first = False
+            else:
+                out.write(",")
+            out.write(json.dumps(data, ensure_ascii=False))
+        out.write("}")
 
-    # with open(each, 'r', encoding="utf8") as f:
-    # data.append(json.load(f))
 
-    with open("todos.json", 'r', encoding="utf8") as f:
-        data = json.load(f)
-    print(len(data))
-    #out.write(json.dumps(data, ensure_ascii=False))
-
+'''
+def main():
+    with open("merged_file.json", "r", encoding='utf8') as f:
+        print(len(json.load(f)))
+'''
 
 if __name__ == "__main__":
     main()

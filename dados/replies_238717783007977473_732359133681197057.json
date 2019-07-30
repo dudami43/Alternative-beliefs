@@ -1,1 +1,54 @@
-{"732359133681197057": {"tweet_id": "732359133681197057", "replie_to": null, "quoting": "238717783007977473", "text": "This Trump satire account is too good! I bet they'll do something about the earth being flat at some poiWOAH HOLD UPhttps://twitter.com/realDonaldTrump/status/238717783007977473 …", "user_id": "471440199", "user_screen_name": "IronManMode", "user_name": "Your Ol' Pal Zeke", "created_at": 1463442998000.0, "retweets": 2, "likes": 2, "replies": 1}, "732383655616729088": {"tweet_id": "732383655616729088", "replie_to": "732359133681197057", "quoting": null, "text": "he's an idiot", "user_id": "46377830", "user_screen_name": "Aelrindyl", "user_name": "🌸 Aelrindyl", "created_at": 1463448845000.0, "retweets": 0, "likes": 1, "replies": 1}, "732530981899489280": {"tweet_id": "732530981899489280", "replie_to": "732383655616729088", "quoting": null, "text": "That idiot is now within spitting distance of the White House.", "user_id": "471440199", "user_screen_name": "IronManMode", "user_name": "Your Ol' Pal Zeke", "created_at": 1463483970000.0, "retweets": 0, "likes": 0, "replies": 1}, "732594702453772288": {"tweet_id": "732594702453772288", "replie_to": "732530981899489280", "quoting": null, "text": "yup and Clinton is no better... America are screwed", "user_id": "46377830", "user_screen_name": "Aelrindyl", "user_name": "🌸 Aelrindyl", "created_at": 1463499162000.0, "retweets": 0, "likes": 0, "replies": 0}}
+{
+    "732359133681197057": {
+        "tweet_id": "732359133681197057",
+        "replie_to": null,
+        "quoting": "238717783007977473",
+        "text": "This Trump satire account is too good! I bet they'll do something about the earth being flat at some poiWOAH HOLD UPhttps://twitter.com/realDonaldTrump/status/238717783007977473 …",
+        "user_id": "471440199",
+        "user_screen_name": "IronManMode",
+        "user_name": "Your Ol' Pal Zeke",
+        "created_at": 1463442998000.0,
+        "retweets": 2,
+        "likes": 2,
+        "replies": 1
+    },
+    "732383655616729088": {
+        "tweet_id": "732383655616729088",
+        "replie_to": "732359133681197057",
+        "quoting": null,
+        "text": "he's an idiot",
+        "user_id": "46377830",
+        "user_screen_name": "Aelrindyl",
+        "user_name": "🌸 Aelrindyl",
+        "created_at": 1463448845000.0,
+        "retweets": 0,
+        "likes": 1,
+        "replies": 1
+    },
+    "732530981899489280": {
+        "tweet_id": "732530981899489280",
+        "replie_to": "732383655616729088",
+        "quoting": null,
+        "text": "That idiot is now within spitting distance of the White House.",
+        "user_id": "471440199",
+        "user_screen_name": "IronManMode",
+        "user_name": "Your Ol' Pal Zeke",
+        "created_at": 1463483970000.0,
+        "retweets": 0,
+        "likes": 0,
+        "replies": 1
+    },
+    "732594702453772288": {
+        "tweet_id": "732594702453772288",
+        "replie_to": "732530981899489280",
+        "quoting": null,
+        "text": "yup and Clinton is no better... America are screwed",
+        "user_id": "46377830",
+        "user_screen_name": "Aelrindyl",
+        "user_name": "🌸 Aelrindyl",
+        "created_at": 1463499162000.0,
+        "retweets": 0,
+        "likes": 0,
+        "replies": 0
+    }
+}

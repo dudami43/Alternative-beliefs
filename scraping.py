@@ -351,11 +351,12 @@ def main():
     random.seed()
 
     originals = [
-        "https://twitter.com/realdonaldtrump/status/488813607958757376"
+        "https://twitter.com/mateuscchk76/status/1148061049339416577", "https://twitter.com/hestour/status/1149816805776613377",
+        "https://twitter.com/laura_nicolli/status/1149829263325110272", "https://twitter.com/eclipstzuyu/status/1149869276981071877"
     ]
 
     get_replies(driver, originals)
-    get_quotes(driver, originals)
+    # get_quotes(driver, originals)
 
     close_driver(driver)
 

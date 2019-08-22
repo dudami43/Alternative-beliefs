@@ -321,9 +321,9 @@ def get_replies(driver, originals, quoted_id=None):
         print("Getting replies of", each)
         link = each.split("/")
         if(quoted_id is not None):
-            file_name = "dados/replies_" + quoted_id + "_" + link[5] + ".json"
+            file_name = "teste/replies_" + quoted_id + "_" + link[5] + ".json"
         else:
-            file_name = "dados/replies_" + link[5] + ".json"
+            file_name = "teste/replies_" + link[5] + ".json"
         file = open(file_name, "w+", encoding='utf8')
         tweets = bfs(driver, each, quoted_id)
         file.write(json.dumps(tweets, ensure_ascii=False))
@@ -351,9 +351,7 @@ def main():
     random.seed()
 
     originals = [
-        "https://twitter.com/mateuscchk76/status/1148061049339416577", "https://twitter.com/hestour/status/1149816805776613377",
-        "https://twitter.com/laura_nicolli/status/1149829263325110272", "https://twitter.com/eclipstzuyu/status/1149869276981071877"
-    ]
+    "https://twitter.com/face_acabou/status/1164220627609358336"    ]
 
     get_replies(driver, originals)
     # get_quotes(driver, originals)

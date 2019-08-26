@@ -1,15 +1,1 @@
-{
-    "1149869276981071877": {
-        "tweet_id": "1149869276981071877",
-        "replie_to": null,
-        "quoting": "1147863151054073857",
-        "text": "meu deushttps://twitter.com/CarlosBolsonaro/status/1147863151054073857 …",
-        "user_id": "935944125794439168",
-        "user_screen_name": "eclipstzuyu",
-        "user_name": "eduardo",
-        "created_at": 1562985173000.0,
-        "retweets": 0,
-        "likes": 0,
-        "replies": 0
-    }
-}
+{"1149869276981071877": {"tweet_id": "1149869276981071877", "replie_to": null, "quoting": "1147863151054073857", "text": "meu deushttps://twitter.com/CarlosBolsonaro/status/1147863151054073857 …", "user_id": "935944125794439168", "user_screen_name": "eclipstzuyu", "user_name": "eduardo", "created_at": 1562985173000.0, "retweets": 0, "likes": 0, "replies": 0, "response_time": 0.0}}

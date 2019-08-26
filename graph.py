@@ -1,20 +1,36 @@
-import networkx as nx
+import glob
 import json
-import matplotlib.pyplot as plt
+from graphviz import Graph
+import os
+os.environ["PATH"] += os.pathsep + 'C:\\graphviz\\bin'
+
 
 def main():
-    with open("replies_trump.json", 'r', encoding="utf8") as f:
-        data = json.load(f)
-    G = nx.Graph()
 
-    for key in data:
-        G.add_node(key)
+    files = glob.glob("dados/*.json")
+    g = Graph('G')
 
-    for key in data:
-        G.add_edge(key, data[key]["replie_to"])
+    # for each in files:
 
-    nx.draw(G, with_labels=False, font_weight='bold')
-    plt.show()
+    try:
+        with open("dados/replies_449525268529815552.json", 'r', encoding="utf8") as f:
+            data = json.load(f)
+
+        g.attr('node', label='')
+
+        for key in data:
+            g.node(key)
+
+        for key in data:
+            if(key is not None):
+                if(data[key]["replie_to"] is not None):
+                    g.edge(key, data[key]["replie_to"])
+                # if(data[key]["quoting"] is not None):
+                    # g.edge(key, data[key]["quoting"], color="red")
+    except:
+        print("each")
+
+    g.view()
 
 
 if __name__ == "__main__":

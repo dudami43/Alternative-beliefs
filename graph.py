@@ -13,7 +13,7 @@ def main():
     # for each in files:
 
     try:
-        with open("dados/replies_568021533131718656.json", 'r', encoding="utf8") as f:
+        with open("dados/replies_1065400254151954432.json", 'r', encoding="utf8") as f:
             data = json.load(f)
 
         g.attr('node', label='')

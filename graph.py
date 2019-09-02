@@ -13,10 +13,10 @@ def main():
     # for each in files:
 
     try:
-        with open("dados/replies_1065400254151954432_1065400447291162624.json", 'r', encoding="utf8") as f:
+        with open("dados/replies_238717783007977473.json", 'r', encoding="utf8") as f:
             data = json.load(f)
 
-        g.attr('node', label='')
+        g.attr('node')
 
         for key in data:
             g.node(key)

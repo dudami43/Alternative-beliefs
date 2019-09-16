@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import threading
 import selenium
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -346,18 +347,46 @@ def get_quotes(driver, originals):
 
 def main():
 
-    driver = init_driver()
+    driver1 = init_driver()
+    driver2 = init_driver()
+    driver3 = init_driver()
 
     random.seed()
 
-    originals = [
-    "https://twitter.com/face_acabou/status/1164220627609358336"    ]
+    flat_earth = [
+    "https://twitter.com/elonmusk/status/935572279693516800",
+    "https://twitter.com/neiltyson/status/1111295662920888320",
+    "https://twitter.com/neiltyson/status/1110742021684092929",
+    "https://twitter.com/neiltyson/status/1013587829421756416",
+    "https://twitter.com/CassiniSaturn/status/984494732461072384"]
 
-    get_replies(driver, originals)
+    climate_change = [
+        "https://twitter.com/SaraCarterDC/status/1169058532865597440",
+        "https://twitter.com/CNN/status/1164386997634568194",
+        "https://twitter.com/NASAClimate/status/1126532737165172736"
+
+    ]
+
+    vax = [
+        "https://twitter.com/Choonghagen/status/1166583118314266625",
+        "https://twitter.com/DrPanMD/status/1166712064309514240"
+    ]
+
+    x = threading.Thread(target=get_quotes, args=(driver1,flat_earth,))
+    y = threading.Thread(target=get_quotes, args=(driver2,climate_change,))
+    z = threading.Thread(target=get_quotes, args=(driver3,vax,))
+    x.start()
+    y.start()
+    z.start()
+    x.join()
+    y.join()
+    z.join()
+    # get_replies(driver, originals)
     # get_quotes(driver, originals)
 
-    close_driver(driver)
-
+    close_driver(driver1)
+    close_driver(driver2)
+    close_driver(driver3)
 
 if __name__ == "__main__":
     main()

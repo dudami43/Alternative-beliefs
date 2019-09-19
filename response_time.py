@@ -1,6 +1,6 @@
 import glob
 import json
-files = glob.glob("dados/*.json")
+files = glob.glob("dados/believes/*.json")
 for filename in files:
     with open(filename, 'r', encoding="utf8") as f:  
         print(filename)  

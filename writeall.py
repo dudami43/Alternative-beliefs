@@ -40,14 +40,11 @@ def main():
 
 
 def main():
-    path = 'C:\\Users\\meomi\\Documents\\INF 496\\CodigosTCC\\teste'
+    path = 'C:\\Users\\meomi\\Documents\\INF 496\\CodigosTCC\\science-dados'
     files = os.listdir(path)
     for index, file in enumerate(files):
-        a = file.split("_")
-        new_name = 'science'
-        for i in range(1, len(a) - 1):
-            new_name += a[i] + "_"
-        new_name += a[len(a)-1]
+        new_name = file[7:]
+        print(new_name)
         os.rename(os.path.join(path, file), os.path.join(
             path, ''.join(str(new_name))))
 

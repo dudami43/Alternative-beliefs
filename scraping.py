@@ -322,9 +322,9 @@ def get_replies(driver, originals, quoted_id=None):
         print("Getting replies of", each)
         link = each.split("/")
         if(quoted_id is not None):
-            file_name = "teste/replies_" + quoted_id + "_" + link[5] + ".json"
+            file_name = "dados/celebs/replies_" + quoted_id + "_" + link[5] + ".json"
         else:
-            file_name = "teste/replies_" + link[5] + ".json"
+            file_name = "dados/celebs/replies_" + link[5] + ".json"
         file = open(file_name, "w+", encoding='utf8')
         tweets = bfs(driver, each, quoted_id)
         file.write(json.dumps(tweets, ensure_ascii=False))
@@ -353,28 +353,29 @@ def main():
 
     random.seed()
 
-    flat_earth = [
-    "https://twitter.com/elonmusk/status/935572279693516800",
-    "https://twitter.com/neiltyson/status/1111295662920888320",
-    "https://twitter.com/neiltyson/status/1110742021684092929",
-    "https://twitter.com/neiltyson/status/1013587829421756416",
-    "https://twitter.com/CassiniSaturn/status/984494732461072384"]
+    part1 = [
+            "https://mobile.twitter.com/britneyspears/status/35767743634481152",
+            "https://twitter.com/ladygaga/status/908396468821774336",
+            "https://twitter.com/cher/status/1171510379102363649"
+            ]   
 
-    climate_change = [
-        "https://twitter.com/SaraCarterDC/status/1169058532865597440",
-        "https://twitter.com/CNN/status/1164386997634568194",
-        "https://twitter.com/NASAClimate/status/1126532737165172736"
+    part2 = [
+            "https://twitter.com/JamesGunn/status/1172598575257346049",
+            "https://mobile.twitter.com/ladygaga/status/266036172122365952",
+            "https://twitter.com/taylorswift13/status/1164750451209900032",
+            "https://twitter.com/starisbornmovie/status/1143537245703401472"
+            ]
 
-    ]
+    part3 = [
+            "https://twitter.com/Beyonce/status/1152238456506114048",
+            "https://twitter.com/blackmirror/status/1139579772890157056",
+            "https://twitter.com/ArianaGrande/status/1172360084321636352",
+            "https://twitter.com/katyperry/status/1167469148122701824"
+            ] 
 
-    vax = [
-        "https://twitter.com/Choonghagen/status/1166583118314266625",
-        "https://twitter.com/DrPanMD/status/1166712064309514240"
-    ]
-
-    x = threading.Thread(target=get_quotes, args=(driver1,flat_earth,))
-    y = threading.Thread(target=get_quotes, args=(driver2,climate_change,))
-    z = threading.Thread(target=get_quotes, args=(driver3,vax,))
+    x = threading.Thread(target=get_replies, args=(driver1,part1,))
+    y = threading.Thread(target=get_replies, args=(driver2,part2,))
+    z = threading.Thread(target=get_replies, args=(driver3,part3,))
     x.start()
     y.start()
     z.start()

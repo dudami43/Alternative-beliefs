@@ -1,5 +1,6 @@
 digraph G {
 	size=20
+	node [label="" shape=circle]
 	238717783007977473 [color="#92C5DF" style=filled]
 	238718801343049728 [color="#2166AC" style=filled]
 	238719202263965696 [color="#D6604D" style=filled]

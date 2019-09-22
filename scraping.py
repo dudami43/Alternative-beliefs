@@ -15,6 +15,7 @@ from bs4 import BeautifulSoup as bs
 import json
 import time
 import random
+from joblib import Parallel, delayed
 
 
 def init_driver():
@@ -317,12 +318,12 @@ def bfs(driver, original, quoted_id):
 
 
 def get_replies(driver, originals, quoted_id=None):
-
     for each in originals:
         print("Getting replies of", each)
         link = each.split("/")
         if(quoted_id is not None):
-            file_name = "dados/celebs/replies_" + quoted_id + "_" + link[5] + ".json"
+            file_name = "dados/celebs/replies_" + \
+                quoted_id + "_" + link[5] + ".json"
         else:
             file_name = "dados/celebs/replies_" + link[5] + ".json"
         file = open(file_name, "w+", encoding='utf8')
@@ -354,28 +355,29 @@ def main():
     random.seed()
 
     part1 = [
-            "https://mobile.twitter.com/britneyspears/status/35767743634481152",
-            "https://twitter.com/ladygaga/status/908396468821774336",
-            "https://twitter.com/cher/status/1171510379102363649"
-            ]   
+        "https://mobile.twitter.com/britneyspears/status/35767743634481152"
+    ]
+    '''"https://twitter.com/cher/status/1171510379102363649",
+        "https://twitter.com/ladygaga/status/908396468821774336",
+        "https://mobile.twitter.com/ladygaga/status/266036172122365952",
+        "https://twitter.com/taylorswift13/status/1164750451209900032",
+        "https://twitter.com/starisbornmovie/status/1143537245703401472",
+        "https://twitter.com/blackmirror/status/1139579772890157056",
+        "https://twitter.com/ArianaGrande/status/1172360084321636352",
+        "https://twitter.com/katyperry/status/1167469148122701824"'''
 
     part2 = [
-            "https://twitter.com/JamesGunn/status/1172598575257346049",
-            "https://mobile.twitter.com/ladygaga/status/266036172122365952",
-            "https://twitter.com/taylorswift13/status/1164750451209900032",
-            "https://twitter.com/starisbornmovie/status/1143537245703401472"
-            ]
+        "https://twitter.com/JamesGunn/status/1172598575257346049"
+    ]
 
     part3 = [
-            "https://twitter.com/Beyonce/status/1152238456506114048",
-            "https://twitter.com/blackmirror/status/1139579772890157056",
-            "https://twitter.com/ArianaGrande/status/1172360084321636352",
-            "https://twitter.com/katyperry/status/1167469148122701824"
-            ] 
+        "https://twitter.com/Beyonce/status/1152238456506114048"
+    ]
 
-    x = threading.Thread(target=get_replies, args=(driver1,part1,))
-    y = threading.Thread(target=get_replies, args=(driver2,part2,))
-    z = threading.Thread(target=get_replies, args=(driver3,part3,))
+    # Parallel(n_jobs=2)(delayed(get_replies)(init_driver(), tweet) for tweet in tweets)
+    x = threading.Thread(target=get_replies, args=(driver1, part1,))
+    y = threading.Thread(target=get_replies, args=(driver2, part2,))
+    z = threading.Thread(target=get_replies, args=(driver3, part3,))
     x.start()
     y.start()
     z.start()
@@ -388,6 +390,7 @@ def main():
     close_driver(driver1)
     close_driver(driver2)
     close_driver(driver3)
+
 
 if __name__ == "__main__":
     main()

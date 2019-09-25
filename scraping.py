@@ -11,6 +11,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.firefox.options import Options
 from urllib.request import urlopen
 # ubuntu from urllib import urlopen
+# from urllib import urlopen
 from bs4 import BeautifulSoup as bs
 import json
 import time
@@ -23,9 +24,8 @@ def init_driver():
     # initiate the driver:
     options = Options()
     options.headless = True
-    driver = webdriver.Firefox(
-        options=options, executable_path=r'C:\\geckodriver\\geckodriver.exe')
-    # driver = webdriver.Firefox()
+    # driver = webdriver.Firefox(options=options, executable_path=r'C:\\geckodriver\\geckodriver.exe')
+    driver = webdriver.Firefox()
 
     # set a default wait time for the browser [5 seconds here]:
     driver.wait = WebDriverWait(driver, 5)
@@ -354,30 +354,25 @@ def main():
 
     random.seed()
 
-    part1 = [
-        "https://mobile.twitter.com/britneyspears/status/35767743634481152"
-    ]
-    '''"https://twitter.com/cher/status/1171510379102363649",
-        "https://twitter.com/ladygaga/status/908396468821774336",
-        "https://mobile.twitter.com/ladygaga/status/266036172122365952",
-        "https://twitter.com/taylorswift13/status/1164750451209900032",
-        "https://twitter.com/starisbornmovie/status/1143537245703401472",
-        "https://twitter.com/blackmirror/status/1139579772890157056",
-        "https://twitter.com/ArianaGrande/status/1172360084321636352",
-        "https://twitter.com/katyperry/status/1167469148122701824"'''
-
-    part2 = [
-        "https://twitter.com/JamesGunn/status/1172598575257346049"
+    part1 = [ "https://twitter.com/50cent/status/22201409032",
+              "https://twitter.com/SHAQ/status/3435123096",
+              "https://twitter.com/KimKardashian/status/22396212024"        
     ]
 
-    part3 = [
-        "https://twitter.com/Beyonce/status/1152238456506114048"
+    part2 = [ "https://twitter.com/KrisJenner/status/243812456558903296",
+              "https://twitter.com/edsheeran/status/6462855740",
+              "https://twitter.com/justinbieber/status/10180145361"        
+    ]
+
+    part3 = [ "https://twitter.com/HulkHogan/status/21587600569",
+               "https://twitter.com/piersmorgan/status/242303672569188354"
+        
     ]
 
     # Parallel(n_jobs=2)(delayed(get_replies)(init_driver(), tweet) for tweet in tweets)
-    x = threading.Thread(target=get_replies, args=(driver1, part1,))
-    y = threading.Thread(target=get_replies, args=(driver2, part2,))
-    z = threading.Thread(target=get_replies, args=(driver3, part3,))
+    x = threading.Thread(target=get_quotes, args=(driver1, part1,))
+    y = threading.Thread(target=get_quotes, args=(driver2, part2,))
+    z = threading.Thread(target=get_quotes, args=(driver3, part3,))
     x.start()
     y.start()
     z.start()

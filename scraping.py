@@ -322,10 +322,10 @@ def get_replies(driver, originals, quoted_id=None):
         print("Getting replies of", each)
         link = each.split("/")
         if(quoted_id is not None):
-            file_name = "dados/celebs/replies_" + \
+            file_name = "dados/science/replies_" + \
                 quoted_id + "_" + link[5] + ".json"
         else:
-            file_name = "dados/celebs/replies_" + link[5] + ".json"
+            file_name = "dados/science/replies_" + link[5] + ".json"
         file = open(file_name, "w+", encoding='utf8')
         tweets = bfs(driver, each, quoted_id)
         file.write(json.dumps(tweets, ensure_ascii=False))
@@ -350,41 +350,30 @@ def main():
 
     driver1 = init_driver()
     driver2 = init_driver()
-    driver3 = init_driver()
 
     random.seed()
 
-    part1 = [ "https://twitter.com/50cent/status/22201409032",
-              "https://twitter.com/SHAQ/status/3435123096",
-              "https://twitter.com/KimKardashian/status/22396212024"        
-    ]
+    part1 = [ "https://twitter.com/MickJagger/status/1174991853403463680", "https://twitter.com/jeremycorbyn/status/1175005540541509634"]
 
-    part2 = [ "https://twitter.com/KrisJenner/status/243812456558903296",
-              "https://twitter.com/edsheeran/status/6462855740",
-              "https://twitter.com/justinbieber/status/10180145361"        
-    ]
-
-    part3 = [ "https://twitter.com/HulkHogan/status/21587600569",
-               "https://twitter.com/piersmorgan/status/242303672569188354"
+    part2 = [ "https://twitter.com/MickJagger/status/1174991853403463680", "https://twitter.com/jeremycorbyn/status/1175005540541509634"]
         
-    ]
-
+ 
     # Parallel(n_jobs=2)(delayed(get_replies)(init_driver(), tweet) for tweet in tweets)
     x = threading.Thread(target=get_quotes, args=(driver1, part1,))
-    y = threading.Thread(target=get_quotes, args=(driver2, part2,))
-    z = threading.Thread(target=get_quotes, args=(driver3, part3,))
+    y = threading.Thread(target=get_replies, args=(driver2, part2,))
+
     x.start()
     y.start()
-    z.start()
+
     x.join()
     y.join()
-    z.join()
+
     # get_replies(driver, originals)
     # get_quotes(driver, originals)
 
     close_driver(driver1)
     close_driver(driver2)
-    close_driver(driver3)
+
 
 
 if __name__ == "__main__":

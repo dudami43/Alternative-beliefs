@@ -27,7 +27,7 @@ def main():
 
 
 def main():
-    files = glob.glob("dados/celebs/*.json")
+    files = glob.glob("dados/science/*.json")
     size = 0
 
     for each in files:
